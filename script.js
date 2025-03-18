@@ -4,6 +4,7 @@ let classifier;
 let isClassifying = false;
 let lastPredictedClass = "";
 let predictionConfidence = 0;
+let currentSpellEffect = null;
 
 // URL du modèle - IMPORTANT: Vérifiez que c'est le bon URL!
 const MODEL_URL = "https://teachablemachine.withgoogle.com/models/0qq6XVmWu/";
@@ -29,10 +30,25 @@ async function init() {
         // Commencer la classification
         startClassification();
         
+        // Ajouter les écouteurs d'événements pour les items de sort
+        setupSpellItemListeners();
+        
     } catch (error) {
         console.error("❌ Erreur d'initialisation:", error);
         document.getElementById("prediction").innerHTML = `⚠️ Erreur: ${error.message}`;
     }
+}
+
+// Ajouter des écouteurs d'événements pour les items de sort
+function setupSpellItemListeners() {
+    const spellItems = document.querySelectorAll('.spell-item');
+    spellItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const spellName = this.getAttribute('data-spell');
+            // Simuler la détection de ce sort pour voir l'effet
+            updateDisplay(spellName, 90);
+        });
+    });
 }
 
 // Configuration de la webcam
@@ -169,47 +185,88 @@ function handleResults(results) {
     
     console.log(`Classe: "${label}" avec confiance: ${confidence}%`);
     
-    // Mettre à jour l'interface uniquement si la prédiction change
+    // Mettre à jour l'affichage uniquement si la prédiction change
+    // ou si la confiance change significativement
     if (label !== lastPredictedClass || Math.abs(confidence - predictionConfidence) > 5) {
         lastPredictedClass = label;
         predictionConfidence = confidence;
         
-        // Mise à jour de l'affichage
+        // Mise à jour de l'affichage avec des effets visuels
         updateDisplay(label, confidence);
     }
 }
 
-// Mettre à jour l'interface
+// Mettre à jour l'interface avec des effets visuels
 function updateDisplay(label, confidence) {
-    // Afficher le résultat
     const predictionElement = document.getElementById("prediction");
+    const appContainer = document.querySelector('.app-container');
+    const wandElement = document.querySelector('.wand');
+    const webcamFrame = document.querySelector('.webcam-frame');
+    const spellDetector = document.querySelector('.spell-detector');
     
-    // Ajouter une classe CSS selon le sort détecté
-    predictionElement.className = ""; // Réinitialiser les classes
+    // Réinitialiser les classes et effets précédents
+    document.body.classList.remove('lumos-active', 'expelliarmus-active');
+    appContainer.classList.remove('lumos-active', 'expelliarmus-active');
+    wandElement.classList.remove('lumos-wand', 'expelliarmus-wand');
+    webcamFrame.classList.remove('lumos-active', 'expelliarmus-active');
     
-    if (confidence < 40) {
-        // Confiance faible
-        predictionElement.innerHTML = `⚠️ Détection incertaine: ${label} (${confidence}%)`;
-    } else {
-        // Bon résultat
-        predictionElement.innerHTML = `✨ ${label} (${confidence}%) ✨`;
-        predictionElement.classList.add(label.toLowerCase());
+    // Supprimer les anciens effets visuels
+    const oldEffects = document.querySelectorAll('.spell-effect');
+    oldEffects.forEach(effect => effect.remove());
+    
+    // Réinitialiser le style de la prédiction
+    predictionElement.style.color = '';
+    predictionElement.style.textShadow = '';
+    
+    // Appliquer les effets en fonction du sort détecté si la confiance est suffisante
+    if (label === "Lumos" && confidence > 60) {
+        // Effet Lumos
+        document.body.classList.add('lumos-active');
+        appContainer.classList.add('lumos-active');
+        wandElement.classList.add('lumos-wand');
+        webcamFrame.classList.add('lumos-active');
         
-        // Changement du fond selon le sort
-        let hue = 240; // Bleu par défaut
+        // Créer l'effet de lumière
+        const lightEffect = document.createElement('div');
+        lightEffect.className = 'spell-effect lumos-light';
+        spellDetector.appendChild(lightEffect);
         
-        if (label === "Lumos") {
-            hue = 60; // Jaune/doré
-        } else if (label === "Expelliarmus") {
-            hue = 0; // Rouge
-        } else if (label === "Rien") {
-            hue = 240; // Bleu
-        }
+        predictionElement.innerHTML = `✨ Lumos (${confidence}%) ✨`;
+        predictionElement.style.color = '#FFD700';
+        predictionElement.style.textShadow = '0 0 10px rgba(255, 215, 0, 0.8)';
+    } 
+    else if (label === "Expelliarmus" && confidence > 60) {
+        // Effet Expelliarmus
+        document.body.classList.add('expelliarmus-active');
+        appContainer.classList.add('expelliarmus-active');
+        wandElement.classList.add('expelliarmus-wand');
+        webcamFrame.classList.add('expelliarmus-active');
         
-        // Ajuster la saturation selon la confiance
-        const saturation = 50 + (confidence / 2);
-        document.body.style.backgroundColor = `hsl(${hue}, ${saturation}%, 20%)`;
+        // Créer l'effet d'onde de choc
+        const shockwaveEffect = document.createElement('div');
+        shockwaveEffect.className = 'spell-effect expelliarmus-shockwave';
+        spellDetector.appendChild(shockwaveEffect);
+        
+        predictionElement.innerHTML = `⚡ Expelliarmus (${confidence}%) ⚡`;
+        predictionElement.style.color = '#FF4500';
+        predictionElement.style.textShadow = '0 0 10px rgba(255, 69, 0, 0.8)';
     }
+    else {
+        // Pas de sort ou confiance trop faible
+        predictionElement.innerHTML = confidence > 50 ? 
+            `${label} (${confidence}%)` : 
+            "En attente d'un sort...";
+        predictionElement.style.color = '#E0E0E0';
+        predictionElement.style.textShadow = 'none';
+    }
+    
+    // Ajouter un son (optionnel)
+    // playSpellSound(label, confidence);
+}
+
+// Fonction pour jouer un son en fonction du sort (à implémenter si souhaité)
+function playSpellSound(spell, confidence) {
+    // Implémentation future possible
 }
 
 // Démarrer l'application quand la page est chargée

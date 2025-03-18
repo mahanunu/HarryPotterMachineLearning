@@ -14,6 +14,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: background-color 1s ease, background-image 1s ease;
 }
 
 .app-container {
@@ -26,6 +27,7 @@ body {
                 0 0 80px rgba(30, 20, 5, 0.2);
     backdrop-filter: blur(5px);
     border: 1px solid rgba(121, 85, 72, 0.2);
+    transition: box-shadow 0.8s ease;
 }
 
 /* Header */
@@ -76,6 +78,7 @@ main {
     border: 2px solid rgba(212, 175, 55, 0.4);
     box-shadow: 0 0 20px rgba(10, 10, 10, 0.8),
                 inset 0 0 5px rgba(212, 175, 55, 0.5);
+    transition: border-color 0.8s ease, box-shadow 0.8s ease;
 }
 
 .webcam-frame::before {
@@ -122,6 +125,8 @@ video {
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(212, 175, 55, 0.2);
+    overflow: hidden;
+    transition: background 0.8s ease, box-shadow 0.8s ease;
 }
 
 .wand {
@@ -133,6 +138,7 @@ video {
     position: relative;
     transform: rotate(-30deg);
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+    transition: all 0.5s ease;
 }
 
 .wand::after {
@@ -147,6 +153,7 @@ video {
     filter: blur(2px);
     opacity: 0.8;
     animation: glow 2s infinite;
+    transition: all 0.5s ease;
 }
 
 .spell-detector h2 {
@@ -167,6 +174,7 @@ video {
     justify-content: center;
     border: 1px solid rgba(212, 175, 55, 0.15);
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 #prediction {
@@ -175,6 +183,7 @@ video {
     letter-spacing: 1px;
     color: #FFC700;
     text-shadow: 0 0 10px rgba(255, 199, 0, 0.4);
+    transition: color 0.5s ease, text-shadow 0.5s ease;
 }
 
 /* Spells guide */
@@ -214,10 +223,145 @@ video {
     font-style: italic;
 }
 
-/* Animations */
+/* Animations de base */
 @keyframes glow {
     0%, 100% { opacity: 0.6; transform: scale(0.8); }
     50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Effets spéciaux pour les sorts */
+.spell-effect {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Effet Lumos */
+body.lumos-active {
+    background-color: #1a180e;
+    background-image: radial-gradient(circle at center, #332b14 0%, #0A0A0A 100%);
+}
+
+.app-container.lumos-active {
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.3), 
+                0 0 100px rgba(255, 215, 0, 0.2);
+}
+
+.webcam-frame.lumos-active {
+    border: 2px solid rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4),
+                inset 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.wand.lumos-wand {
+    background: linear-gradient(90deg, #5D4037 50%, #D4AF37 60%, #FFC700 70%);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+}
+
+.wand.lumos-wand::after {
+    background: radial-gradient(#FFF, #FFC700 30%, transparent 70%);
+    width: 18px;
+    height: 18px;
+    filter: blur(3px);
+    animation: lumos-glow 1.5s infinite;
+}
+
+.lumos-light {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.9) 0%, rgba(255, 215, 0, 0.1) 70%, transparent 100%);
+    border-radius: 50%;
+    animation: lumos-expand 2s forwards;
+}
+
+@keyframes lumos-expand {
+    to {
+        width: 300px;
+        height: 300px;
+        opacity: 0.4;
+    }
+}
+
+@keyframes lumos-glow {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* Effet Expelliarmus */
+body.expelliarmus-active {
+    background-color: #1a0f0f;
+    background-image: radial-gradient(circle at center, #3a1010 0%, #0A0A0A 100%);
+}
+
+.app-container.expelliarmus-active {
+    box-shadow: 0 0 60px rgba(255, 69, 0, 0.2), 
+                0 0 100px rgba(139, 0, 0, 0.1);
+}
+
+.webcam-frame.expelliarmus-active {
+    border: 2px solid rgba(255, 69, 0, 0.6);
+    box-shadow: 0 0 30px rgba(255, 69, 0, 0.3),
+                inset 0 0 10px rgba(255, 69, 0, 0.4);
+}
+
+.wand.expelliarmus-wand {
+    background: linear-gradient(90deg, #5D4037 50%, #FF4500 60%, #8B0000 70%);
+    transform: rotate(-45deg) !important;
+    animation: expelliarmus-cast 0.5s forwards;
+}
+
+.wand.expelliarmus-wand::after {
+    background: radial-gradient(#FF4500, #8B0000 30%, transparent 70%);
+    animation: expelliarmus-pulse 0.8s infinite;
+}
+
+.expelliarmus-shockwave {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid rgba(255, 69, 0, 0.8);
+    opacity: 1;
+    animation: expelliarmus-wave 1s cubic-bezier(0, 0.5, 0.5, 1) forwards;
+}
+
+@keyframes expelliarmus-wave {
+    to {
+        width: 250px;
+        height: 250px;
+        border-width: 1px;
+        opacity: 0;
+    }
+}
+
+@keyframes expelliarmus-cast {
+    0% { transform: rotate(-30deg); }
+    20% { transform: rotate(-40deg) translateX(-5px); }
+    40% { transform: rotate(-25deg) translateX(10px); }
+    60% { transform: rotate(-45deg) translateX(5px); }
+    100% { transform: rotate(-35deg) translateX(0); }
+}
+
+@keyframes expelliarmus-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* Guide des sorts amélioré */
+.spell-item[data-spell="Lumos"]:hover {
+    border-left-color: #FFD700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.spell-item[data-spell="Expelliarmus"]:hover {
+    border-left-color: #FF4500;
+    box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
 }
 
 /* Responsive */
