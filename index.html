@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magie en Action</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Cinzel:wght@600&display=swap" rel="stylesheet">
+    
+    <!-- Chargement de ml5.js depuis un CDN plus récent et fiable -->
+    <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">⚡</div>
+            <h1>Révélateur de Sorts</h1>
+        </header>
+        
+        <main>
+            <div class="webcam-section">
+                <div class="webcam-frame">
+                    <video id="webcam" autoplay playsinline></video>
+                </div>
+            </div>
+            
+            <div class="spell-section">
+                <div class="spell-detector">
+                    <div class="wand"></div>
+                    <h2>Sort détecté</h2>
+                    <div class="spell-display">
+                        <p id="prediction">En attente...</p>
+                    </div>
+                </div>
+                
+                <div class="spells-guide">
+                    <div class="spell-item" data-spell="Lumos">
+                        <span class="spell-name">Lumos</span>
+                        <span class="spell-desc">Crée de la lumière (peace sign ✌️)</span>
+                    </div>
+                    <div class="spell-item" data-spell="Expelliarmus">
+                        <span class="spell-name">Expelliarmus</span>
+                        <span class="spell-desc">Désarme (main ouverte ✋)</span>
+                    </div>
+                    <div class="spell-item" data-spell="Rien">
+                        <span class="spell-name">Rien</span>
+                        <span class="spell-desc">Pas de sort</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Chargement de notre script -->
+    <script src="script.js"></script>
+</body>
+</html>
